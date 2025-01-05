@@ -1,0 +1,40 @@
+# Fichiers Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+*.venv
+*.log
+*.sqlite3
+
+# Environnements virtuels
+env/
+venv/
+ENV/
+
+# Fichiers de migration
+db.sqlite3
+*.sqlite3
+*.bak
+
+# IDE / Outils
+.vscode/
+.idea/
+*.swp
+
+# Clés secrètes et fichiers sensibles
+*.env
+.env
+secrets.json
+
+# Django static and media files
+staticfiles/
+media/
+
+# Caches et builds
+*.egg-info/
+*.dist-info/
+*.tar.gz
+*.whl
+node_modules/
