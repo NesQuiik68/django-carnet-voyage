@@ -17,14 +17,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'destination_list' %}">Destinations</a>
                 </li>
-                {% if user.is_authenticated %}
+                {% if user.is_authenticated and user.isLoggedIn %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'favoris_list' %}">Favoris</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'destination_create' %}">Ajouter une destination</a>
                     </li>
-                     <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" href="{% url 'weather_view' %}">Météo</a>
                     </li>
                 {% endif %}
@@ -34,9 +34,15 @@
                     <li class="nav-item">
                         <span class="nav-link">Bonjour, {{ user.username }}</span>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
-                    </li>
+                    {% if user.isLoggedIn %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'logout' %}">Déconnexion</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'login' %}">Connexion</a>
+                        </li>
+                    {% endif %}
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'login' %}">Connexion</a>

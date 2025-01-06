@@ -18,7 +18,12 @@
     <h2>Avis</h2>
     <ul>
         {% for avis in destination.avis.all %}
-            <li>Note: {{ avis.note }}, Commentaire: {{ avis.commentaire }}</li>
+            <li>
+                Note: {{ avis.note }}, Commentaire: {{ avis.commentaire }}
+                {% if avis.user %}
+                    - Par: {{ avis.user.username }}
+                {% endif %}
+            </li>
         {% empty %}
             <li>Pas d'avis pour cette destination.</li>
         {% endfor %}

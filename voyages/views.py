@@ -7,6 +7,7 @@ from .forms import DestinationForm
 from django.conf import settings
 import requests
 from django.utils import timezone
+from users.decorators import login_required_custom
 
 def destination_list(request):
     destinations = Destination.objects.all()
@@ -18,15 +19,15 @@ def destination_detail(request, pk):
         note = request.POST.get('note')
         commentaire = request.POST.get('commentaire')
         if note and commentaire:
-            Avis.objects.create(destination=destination, note=note, commentaire=commentaire)
+            Avis.objects.create(destination=destination, note=note, commentaire=commentaire, user=request.user)
             messages.success(request, "Avis ajouté avec succès!")
             return redirect('destination_detail', pk=pk)
         else:
             messages.error(request, "Veuillez remplir tous les champs.")
     
-    city = destination.name  # Use the destination name as the city
+    city = destination.name
     api_key = settings.OPENWEATHERMAP_API_KEY
-    url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=fr' # Added lang=fr
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=fr'
     try:
         response = requests.get(url)
         response.raise_for_status()
@@ -37,10 +38,8 @@ def destination_detail(request, pk):
     
     return render(request, 'voyages/destination_detail.html', {'destination': destination, 'weather_data': weather_data})
 
-@login_required
+@login_required_custom
 def ajouter_favori(request, pk):
-    if not request.user.isLoggedIn:
-        return HttpResponseForbidden("Vous devez être connecté pour ajouter aux favoris.")
     destination = get_object_or_404(Destination, pk=pk)
     favori, created = Favori.objects.get_or_create(user=request.user)
 
@@ -55,7 +54,7 @@ def ajouter_favori(request, pk):
         favori.save()
     return redirect('destination_detail', pk=pk)
 
-@login_required
+@login_required_custom
 def favoris_list(request):
     favori = Favori.objects.filter(user=request.user).first()
     if favori:
@@ -64,7 +63,7 @@ def favoris_list(request):
         destinations = []
     return render(request, 'voyages/favoris_list.html', {'destinations': destinations})
 
-@login_required
+@login_required_custom
 def destination_create(request):
     if request.method == 'POST':
         form = DestinationForm(request.POST)
@@ -79,12 +78,12 @@ def destination_create(request):
     return render(request, 'voyages/destination_form.html', {'form': form})
 
 def weather_view(request):
-    city = 'Strasbourg'  # You can make this dynamic
+    city = 'Strasbourg'
     api_key = settings.OPENWEATHERMAP_API_KEY
-    url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=fr' 
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=fr'
     try:
         response = requests.get(url)
-        response.raise_for_status()  # Raise an exception for bad status codes
+        response.raise_for_status()
         weather_data = response.json()
     except requests.exceptions.RequestException as e:
         weather_data = None

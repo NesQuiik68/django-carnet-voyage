@@ -29,6 +29,7 @@ class Avis(models.Model):
     note = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
     commentaire = models.TextField(blank=True)
     destination = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='avis', null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True) # Added user field
 
     def __str__(self):
         if self.destination:
