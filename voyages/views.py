@@ -66,7 +66,7 @@ def favoris_list(request):
 @login_required_custom
 def destination_create(request):
     if request.method == 'POST':
-        form = DestinationForm(request.POST)
+        form = DestinationForm(request.POST, request.FILES) # Added request.FILES
         if form.is_valid():
             form.save()
             messages.success(request, "Destination ajoutée avec succès!")

@@ -10,6 +10,7 @@ class Destination(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='to_visit')
+    image = models.ImageField(upload_to='destination_images/', null=True, blank=True) # Added image field
 
     def __str__(self):
         return self.name
@@ -29,7 +30,7 @@ class Avis(models.Model):
     note = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
     commentaire = models.TextField(blank=True)
     destination = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='avis', null=True, blank=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True) # Added user field
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         if self.destination:

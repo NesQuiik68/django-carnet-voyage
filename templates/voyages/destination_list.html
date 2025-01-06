@@ -1,22 +1,23 @@
-<file>
-      {% extends 'base.html' %}
+{% extends 'base.html' %}
 
-      {% block title %}Destinations{% endblock %}
+{% block title %}Destinations{% endblock %}
 
-      {% block content %}
-          <h1>Destinations</h1>
-          <div class="row">
-              {% for destination in destinations %}
-                  <div class="col-md-4 mb-3">
-                      <div class="card">
-                          <div class="card-body">
-                              <h5 class="card-title">{{ destination.name }}</h5>
-                              <p class="card-text">{{ destination.status }}</p>
-                              <a href="{% url 'destination_detail' destination.pk %}" class="btn btn-primary">Voir détails</a>
-                          </div>
-                      </div>
-                  </div>
-              {% endfor %}
-          </div>
-      {% endblock %}
-    </file>
+{% block content %}
+    <h1>Destinations</h1>
+    <div class="row">
+        {% for destination in destinations %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    {% if destination.image %}
+                        <img src="{{ destination.image.url }}" class="card-img-top" alt="{{ destination.name }}" style="max-height: 200px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ destination.name }}</h5>
+                        <p class="card-text">{{ destination.status }}</p>
+                        <a href="{% url 'destination_detail' destination.pk %}" class="btn btn-primary">Voir détails</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

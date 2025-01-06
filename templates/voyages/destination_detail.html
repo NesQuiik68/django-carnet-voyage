@@ -5,6 +5,9 @@
 {% block content %}
     <h1>{{ destination.name }}</h1>
     <p>{{ destination.description }}</p>
+    {% if destination.image %}
+        <img src="{{ destination.image.url }}" alt="{{ destination.name }}" style="max-width: 300px;">
+    {% endif %}
 
     <h2>Météo</h2>
     {% if weather_data %}

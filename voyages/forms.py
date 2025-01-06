@@ -4,4 +4,4 @@ from .models import Destination
 class DestinationForm(forms.ModelForm):
     class Meta:
         model = Destination
-        fields = ['name', 'description', 'status']
+        fields = ['name', 'description', 'status', 'image']
