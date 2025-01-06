@@ -7,4 +7,5 @@ urlpatterns = [
     path('<int:pk>/favori/', views.ajouter_favori, name='ajouter_favori'),
     path('favoris/', views.favoris_list, name='favoris_list'),
     path('create/', views.destination_create, name='destination_create'),
+    path('weather/', views.weather_view, name='weather_view'),
 ]

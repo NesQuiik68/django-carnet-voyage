@@ -4,6 +4,8 @@ from .models import Destination, Favori, Avis
 from django.http import HttpResponseForbidden
 from django.contrib import messages
 from .forms import DestinationForm
+from django.conf import settings
+import requests
 from django.utils import timezone
 
 def destination_list(request):
@@ -21,7 +23,19 @@ def destination_detail(request, pk):
             return redirect('destination_detail', pk=pk)
         else:
             messages.error(request, "Veuillez remplir tous les champs.")
-    return render(request, 'voyages/destination_detail.html', {'destination': destination})
+    
+    city = destination.name  # Use the destination name as the city
+    api_key = settings.OPENWEATHERMAP_API_KEY
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=fr' # Added lang=fr
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        weather_data = response.json()
+    except requests.exceptions.RequestException as e:
+        weather_data = None
+        messages.error(request, f"Erreur lors de la récupération des données météo: {e}")
+    
+    return render(request, 'voyages/destination_detail.html', {'destination': destination, 'weather_data': weather_data})
 
 @login_required
 def ajouter_favori(request, pk):
@@ -36,7 +50,6 @@ def ajouter_favori(request, pk):
         else:
             favori.destinations.add(destination)
     
-    # Update the date_added field when adding a favorite
     if created or destination not in favori.destinations.all():
         favori.date_added = timezone.now()
         favori.save()
@@ -64,3 +77,16 @@ def destination_create(request):
     else:
         form = DestinationForm()
     return render(request, 'voyages/destination_form.html', {'form': form})
+
+def weather_view(request):
+    city = 'Strasbourg'  # You can make this dynamic
+    api_key = settings.OPENWEATHERMAP_API_KEY
+    url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric&lang=fr' 
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an exception for bad status codes
+        weather_data = response.json()
+    except requests.exceptions.RequestException as e:
+        weather_data = None
+        messages.error(request, f"Erreur lors de la récupération des données météo: {e}")
+    return render(request, 'voyages/weather.html', {'weather_data': weather_data})

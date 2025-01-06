@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Météo à Strasbourg{% endblock %}
+
+{% block content %}
+    <h1>Météo à Strasbourg</h1>
+    {% if weather_data %}
+        <p>Température: {{ weather_data.main.temp }} °C</p>
+        <p>Description: {{ weather_data.weather.0.description }}</p>
+        <p>Humidité: {{ weather_data.main.humidity }}%</p>
+    {% else %}
+        <p>Impossible de récupérer les données météo.</p>
+    {% endif %}
+{% endblock %}

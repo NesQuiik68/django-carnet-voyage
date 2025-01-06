@@ -6,6 +6,15 @@
     <h1>{{ destination.name }}</h1>
     <p>{{ destination.description }}</p>
 
+    <h2>Météo</h2>
+    {% if weather_data %}
+        <p>Température: {{ weather_data.main.temp }} °C</p>
+        <p>Description: {{ weather_data.weather.0.description }}</p>
+        <p>Humidité: {{ weather_data.main.humidity }}%</p>
+    {% else %}
+        <p>Impossible de récupérer les données météo.</p>
+    {% endif %}
+
     <h2>Avis</h2>
     <ul>
         {% for avis in destination.avis.all %}
