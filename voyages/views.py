@@ -4,6 +4,7 @@ from .models import Destination, Favori, Avis
 from django.http import HttpResponseForbidden
 from django.contrib import messages
 from .forms import DestinationForm
+from django.utils import timezone
 
 def destination_list(request):
     destinations = Destination.objects.all()
@@ -34,6 +35,11 @@ def ajouter_favori(request, pk):
             favori.destinations.remove(destination)
         else:
             favori.destinations.add(destination)
+    
+    # Update the date_added field when adding a favorite
+    if created or destination not in favori.destinations.all():
+        favori.date_added = timezone.now()
+        favori.save()
     return redirect('destination_detail', pk=pk)
 
 @login_required
