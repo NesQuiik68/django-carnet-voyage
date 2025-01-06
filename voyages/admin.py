@@ -13,8 +13,8 @@ class LieuAdmin(admin.ModelAdmin):
 
 @admin.register(Avis)
 class AvisAdmin(admin.ModelAdmin):
-    list_display = ('lieu', 'note')
-    search_fields = ('lieu__name', 'commentaire')
+    list_display = ('destination', 'note')  # Changed from 'lieu' to 'destination'
+    search_fields = ('destination__name', 'commentaire') # Changed from 'lieu__name' to 'destination__name'
 
 @admin.register(Favori)
 class FavoriAdmin(admin.ModelAdmin):

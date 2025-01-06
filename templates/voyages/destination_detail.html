@@ -1,44 +1,59 @@
-<file>
-      {% extends 'base.html' %}
+{% extends 'base.html' %}
 
-      {% block title %}{{ destination.name }}{% endblock %}
+{% block title %}{{ destination.name }}{% endblock %}
 
-      {% block content %}
-          <h1>{{ destination.name }}</h1>
-          <p>{{ destination.description }}</p>
-          <h2>Lieux</h2>
-          <ul>
-              {% for lieu in destination.lieux.all %}
-                  <li>
-                      {{ lieu.name }}
-                      <ul>
-                          {% for avis in lieu.avis.all %}
-                              <li>Note: {{ avis.note }}, Commentaire: {{ avis.commentaire }}</li>
-                          {% empty %}
-                              <li>Pas d'avis pour ce lieu.</li>
-                          {% endfor %}
-                      </ul>
-                  </li>
-              {% empty %}
-                  <li>Pas de lieux pour cette destination.</li>
-              {% endfor %}
-          </ul>
-          <form method="post" action="{% url 'ajouter_favori' destination.pk %}">
-              {% csrf_token %}
-              {% if user.is_authenticated %}
-                  {% if user.isLoggedIn %}
-                      {% if destination in user.favoris.first.destinations.all %}
-                          <button type="submit" class="btn btn-danger">Retirer des favoris</button>
-                      {% else %}
-                          <button type="submit" class="btn btn-success">Ajouter aux favoris</button>
-                      {% endif %}
-                  {% else %}
-                      <p class="alert alert-warning">Connectez-vous pour ajouter aux favoris.</p>
-                  {% endif %}
-              {% else %}
-                  <p class="alert alert-warning">Connectez-vous pour ajouter aux favoris.</p>
-              {% endif %}
-          </form>
-          <a href="{% url 'destination_list' %}" class="btn btn-secondary mt-3">Retour à la liste des destinations</a>
-      {% endblock %}
-    </file>
+{% block content %}
+    <h1>{{ destination.name }}</h1>
+    <p>{{ destination.description }}</p>
+
+    <h2>Avis</h2>
+    <ul>
+        {% for avis in destination.avis.all %}
+            <li>Note: {{ avis.note }}, Commentaire: {{ avis.commentaire }}</li>
+        {% empty %}
+            <li>Pas d'avis pour cette destination.</li>
+        {% endfor %}
+    </ul>
+
+    {% if user.is_authenticated and user.isLoggedIn %}
+        <h2>Ajouter un avis</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="note">Note (1-5):</label>
+                <select class="form-control" name="note" id="note">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="commentaire">Commentaire:</label>
+                <textarea class="form-control" name="commentaire" id="commentaire"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Ajouter un avis</button>
+        </form>
+    {% else %}
+        <p class="alert alert-warning">Connectez-vous pour ajouter un avis.</p>
+    {% endif %}
+
+    <form method="post" action="{% url 'ajouter_favori' destination.pk %}">
+        {% csrf_token %}
+        {% if user.is_authenticated %}
+            {% if user.isLoggedIn %}
+                {% if destination in user.favoris.first.destinations.all %}
+                    <button type="submit" class="btn btn-danger">Retirer des favoris</button>
+                {% else %}
+                    <button type="submit" class="btn btn-success">Ajouter aux favoris</button>
+                {% endif %}
+            {% else %}
+                <p class="alert alert-warning">Connectez-vous pour ajouter aux favoris.</p>
+            {% endif %}
+        {% else %}
+            <p class="alert alert-warning">Connectez-vous pour ajouter aux favoris.</p>
+        {% endif %}
+    </form>
+    <a href="{% url 'destination_list' %}" class="btn btn-secondary mt-3">Retour à la liste des destinations</a>
+{% endblock %}

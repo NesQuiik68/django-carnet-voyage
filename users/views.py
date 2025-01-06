@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
-
 
 def login_view(request):
     if request.method == 'POST':
@@ -13,8 +12,10 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
+                user.isLoggedIn = True
+                user.save()
                 messages.success(request, f"Bienvenue {username}!")
-                return redirect('destination_list')  # Redirect to your main page
+                return redirect('destination_list')
             else:
                 messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
     else:
@@ -23,6 +24,9 @@ def login_view(request):
 
 
 def logout_view(request):
+    if request.user.is_authenticated:
+        request.user.isLoggedIn = False
+        request.user.save()
     logout(request)
     messages.success(request, "Vous êtes déconnecté.")
-    return redirect('destination_list') # Redirect to your main page
+    return redirect('destination_list')

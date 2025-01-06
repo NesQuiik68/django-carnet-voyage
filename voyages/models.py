@@ -1,14 +1,5 @@
 from django.db import models
 from django.conf import settings
-from django.db import models
-
-class User(models.Model):
-    username = models.CharField(max_length=100)
-    password = models.CharField(max_length=100)
-    email = models.EmailField()
-
-    def __str__(self):
-        return self.username
 
 class Destination(models.Model):
     STATUS_CHOICES = [
@@ -33,10 +24,13 @@ class Lieu(models.Model):
 class Avis(models.Model):
     note = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
     commentaire = models.TextField(blank=True)
-    lieu = models.ForeignKey(Lieu, on_delete=models.CASCADE, related_name='avis')
+    destination = models.ForeignKey(Destination, on_delete=models.CASCADE, related_name='avis', null=True, blank=True)
 
     def __str__(self):
-        return f"Avis pour {self.lieu.name} - Note: {self.note}"
+        if self.destination:
+            return f"Avis pour {self.destination.name} - Note: {self.note}"
+        else:
+            return f"Avis sans destination - Note: {self.note}"
 
 class Favori(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='favoris')
